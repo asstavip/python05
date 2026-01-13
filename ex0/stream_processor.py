@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
+
 class DataProcessor(ABC):
     @abstractmethod
     def process(self, data: Any) -> str:
@@ -15,7 +16,7 @@ class DataProcessor(ABC):
 
 
 class NumericProcessor(DataProcessor):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         print("Initializing Numeric Processor...")
 
@@ -43,7 +44,7 @@ class NumericProcessor(DataProcessor):
 
 
 class TextProcessor(DataProcessor):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         print("Initializing Text Processor...")
 
@@ -66,7 +67,7 @@ class TextProcessor(DataProcessor):
 
 
 class LogProcessor(DataProcessor):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         print("Initializing Log Processor...")
 
@@ -77,7 +78,7 @@ class LogProcessor(DataProcessor):
             message = "ERROR"
             if string[0] != "ERROR":
                 message = string[0]
-            return f"{[message] } {message} level detected:{string[-1]}"
+            return f"{[message]} {message} level detected:{string[-1]}"
         else:
             return "Cannot Proccessing Data"
 
@@ -91,30 +92,29 @@ class LogProcessor(DataProcessor):
 
 
 print("=== CODE NEXUS - DATA PROCESSOR FOUNDATION ===")
-processor = NumericProcessor()
+processor_numeric = NumericProcessor()
 data = [1, 2, 3, 4, 5]
-print(processor.format_output(processor.process(data)), "\n")
+print(processor_numeric.format_output(processor_numeric.process(data)), "\n")
 
-processor = TextProcessor()
+processor_text = TextProcessor()
 data = "Hello Nexus World"
-print(processor.format_output(processor.process(data)), "\n")
+print(processor_text.format_output(processor_text.process(data)), "\n")
 
-processor = LogProcessor()
+processor_log = LogProcessor()
 data = "Hello Nexus World"
-print(processor.format_output(processor.process(data)), "\n")
+print(processor_log.format_output(processor_log.process(data)), "\n")
 
 print("=== Polymorphic Processing Demo ===")
 print("Processing multiple data types through same interface...")
 
 tasks = [
-    (NumericProcessor(), [1, 2, 3]),
-    (TextProcessor(), "Hello Nexus"),
-    (LogProcessor(), "INFO: System ready"),
+    (processor_numeric, [1, 2, 3]),
+    (processor_text, "Hello Nexus"),
+    (processor_log, "INFO: System ready"),
 ]
 print()
-for i, (pr,data) in enumerate(tasks,1):
+for i, (pr, data) in enumerate(tasks, 1):
     result = pr.format_output(pr.process(data))
-
     print(f"Result {i}: {result}\n")
 
 

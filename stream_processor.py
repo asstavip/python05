@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-
 class DataProcessor(ABC):
     @abstractmethod
     def process(self, data: Any) -> str:
@@ -32,7 +31,7 @@ class NumericProcessor(DataProcessor):
     def validate(self, data: Any) -> bool:
         try:
             for elem in data:
-                if type(elem) is not int:
+                if not isinstance(elem, int):
                     print("Validation: Numeric data not verified")
                     return False
         except TypeError:
@@ -58,7 +57,7 @@ class TextProcessor(DataProcessor):
             return "Cannot Proccessing Data"
 
     def validate(self, data: Any) -> bool:
-        if type(data) is str:
+        if isinstance(data, str):
             print("Validation: Text data verified")
             return True
         else:
@@ -74,13 +73,16 @@ class LogProcessor(DataProcessor):
     def process(self, data: Any) -> str:
         print("Processing data:", data)
         if self.validate(data):
-            string = str(data).split(":")[-1]
-            return f"[ALERT] ERROR level detected:{string}"
+            string = str(data).split(":")
+            message = "ERROR"
+            if string[0] != "ERROR":
+                message = string[0]
+            return f"{[message] } {message} level detected:{string[-1]}"
         else:
             return "Cannot Proccessing Data"
 
     def validate(self, data: Any) -> bool:
-        if type(data) is str:
+        if isinstance(data, str):
             print("Validation: Log entry verified")
             return True
         else:
@@ -104,6 +106,16 @@ print(processor.format_output(processor.process(data)), "\n")
 print("=== Polymorphic Processing Demo ===")
 print("Processing multiple data types through same interface...")
 
-p = NumericProcessor()
-data = [1, 2, 3, 4, 5]
-print(p.format_output(p.process(data)), "\n")
+tasks = [
+    (NumericProcessor(), [1, 2, 3]),
+    (TextProcessor(), "Hello Nexus"),
+    (LogProcessor(), "INFO: System ready"),
+]
+print()
+for i, (pr,data) in enumerate(tasks,1):
+    result = pr.format_output(pr.process(data))
+
+    print(f"Result {i}: {result}\n")
+
+
+print("Foundation systems online. Nexus ready for advanced streams.")

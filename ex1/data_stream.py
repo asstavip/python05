@@ -19,31 +19,72 @@ class DataStream(ABC):
 class SensorStream(DataStream):
     def __init__(self, id: str):
         super().__init__()
-        self.id = id
+        self.__id = id
         print("Initializing Sensor Stream...")
-        print("Stream ID:", self.id, "Type: Environmental Data")
+        print(f"Stream ID: {self.__id}, Type: Environmental Data")
+
+        self.__total_obj = 0
+        self.__temp_sum = 0.0
+        self.__temp_count = 0
 
     def process_batch(self, data_batch: List[Any]) -> str:
+        formatted_items = []
+        for item in data_batch:
+            if isinstance(item, dict):
+                formatted_items.append(f"{item.get('type')}: {item.get('value')}")
         string = "Processing sensor batch: ["
-        for i in data_batch:
-            for i,v in enumerate(i.values(),1):
-                if i % 2 == 1:
-                    string += f"{v} :"
-                else:
-                    string += f"{v},"
-            # string += ","
+        for i,ele in enumerate(formatted_items):
+            if i != len(formatted_items) - 1:
+                string +=f"{ele}, "
+            else:
+                string += f"{ele}"
+        string += "]"
         print(string)
-    
+        self.__total_obj += len(data_batch)
+
+        temps = [
+            e["value"]
+            for e in data_batch if e.get("type") == "temp"
+        ]
+
+        if temps:
+            current_sum = sum(temps)
+            current_count = len(temps)
+
+            self.__temp_sum += current_sum
+            self.__temp_count += current_count
+
+            batch_avg = current_sum / current_count
+            return f"Sensor analysis: {len(data_batch)} readings processed, avg temp: {batch_avg:.2f}C"
+
+        return f"Sensor analysis: {len(data_batch)} readings processed, no temp data"
+
     def filter_data(
         self, data_batch: List[Any], criteria: Optional[str] = None
     ) -> List[Any]:
-        pass
+        filtered_data = []
+        for element in list:
+            if element.get("type") == criteria or criteria in map(
+                str, element.values()
+            ):
+                filtered.append(element)
+        return filtered
 
     def get_stats(self) -> Dict[str, Union[str, int, float]]:
-        pass
+        avg = 0.0
+        if self.__temp_count > 0:
+            avg = self.__temp_sum / self.__temp_count
+        return {"readings": self.__total_obj, "avg_temp": avg}
 
 
 class TransactionStream(DataStream):
+    def __init__(self, id: str):
+        super().__init__()
+        self.__id = id
+        print("Initializing Transaction Stream...")
+        print(f"Stream ID: {self.__id}, Type: Financial Data")
+        self.__operations_count = 0
+        self.__net_flow = 0
     def process_batch(self, data_batch: List[Any]) -> str:
         pass
 
@@ -73,21 +114,7 @@ class StreamProcessor:
     pass
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#TODO: ALL Implementations are here like this : 
+# TODO: ALL Implementations are here like this :
 
 
 print("=== CODE NEXUS - POLYMORPHIC STREAM SYSTEM ===")
@@ -110,7 +137,7 @@ sensor_data = [
 ]
 print(sensor_stream.process_batch(sensor_data))
 # # Stats might return the internal counter tracked by the object
-# print(f"Stats: {sensor_stream.get_stats()}\n")
+print(f"Stats: {sensor_stream.get_stats()}\n")
 
 
 # # 3. TRANSACTION STREAM

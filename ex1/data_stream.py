@@ -33,19 +33,16 @@ class SensorStream(DataStream):
             if isinstance(item, dict):
                 formatted_items.append(f"{item.get('type')}: {item.get('value')}")
         string = "Processing sensor batch: ["
-        for i,ele in enumerate(formatted_items):
+        for i, ele in enumerate(formatted_items):
             if i != len(formatted_items) - 1:
-                string +=f"{ele}, "
+                string += f"{ele}, "
             else:
                 string += f"{ele}"
         string += "]"
         print(string)
         self.__total_obj += len(data_batch)
 
-        temps = [
-            e["value"]
-            for e in data_batch if e.get("type") == "temp"
-        ]
+        temps = [e["value"] for e in data_batch if e.get("type") == "temp"]
 
         if temps:
             current_sum = sum(temps)
@@ -85,19 +82,40 @@ class TransactionStream(DataStream):
         print(f"Stream ID: {self.__id}, Type: Financial Data")
         self.__operations_count = 0
         self.__net_flow = 0
+
     def process_batch(self, data_batch: List[Any]) -> str:
-        pass
+        for element in data_batch:
+            if isinstance(element,dict) :
+                self.__operations_count += 1
+                if element["action"] == "buy":
+                    self.__net_flow -= element["amount"]
+                if element["action"] == "sell":
+                    self.__net_flow += element["amount"]
+        return (
+            f"Transaction analysis: {self.__operations_count} operations, "
+            f"net flow: {self.__net_flow} units"
+        )
 
     def filter_data(
         self, data_batch: List[Any], criteria: Optional[str] = None
     ) -> List[Any]:
-        pass
+        filtered_data = []
+        for element in list:
+            if element.get("action") == criteria or criteria in map(
+                str, element.values()
+            ):
+                filtered.append(element)
+        return filtered
 
     def get_stats(self) -> Dict[str, Union[str, int, float]]:
-        pass
+        return {
+            "total_operations": self.__operations_count,
+            "current_balance": self.__net_flow,
+        }
 
 
 class EventStream(DataStream):
+    self.
     def process_batch(self, data_batch: List[Any]) -> str:
         pass
 
@@ -121,34 +139,34 @@ print("=== CODE NEXUS - POLYMORPHIC STREAM SYSTEM ===")
 
 # 1. Initialize the specialized streams
 # Constructor takes a unique Stream ID (string) [cite: 198]
-sensor_stream = SensorStream("SENSOR_001")
-# trans_stream = TransactionStream("TRANS_001")
+# sensor_stream = SensorStream("SENSOR_001")
+trans_stream = TransactionStream("TRANS_001")
 # event_stream = EventStream("EVENT_001")
 
 # --- Individual Testing ---
 
-# 2. SENSOR STREAM
-# Input: A list of values or labeled readings (Batch)
-# The logic needs to identify 'temp' to calculate the average
-sensor_data = [
-    {"type": "temp", "value": 22.5},
-    {"type": "humidity", "value": 65},
-    {"type": "pressure", "value": 1013},
-]
-print(sensor_stream.process_batch(sensor_data))
-# # Stats might return the internal counter tracked by the object
-print(f"Stats: {sensor_stream.get_stats()}\n")
+# # 2. SENSOR STREAM
+# # Input: A list of values or labeled readings (Batch)
+# # The logic needs to identify 'temp' to calculate the average
+# sensor_data = [
+#     {"type": "temp", "value": 22.5},
+#     {"type": "humidity", "value": 65},
+#     {"type": "pressure", "value": 1013},
+# ]
+# print(sensor_stream.process_batch(sensor_data))
+# # # Stats might return the internal counter tracked by the object
+# print(f"Stats: {sensor_stream.get_stats()}\n")
 
 
 # # 3. TRANSACTION STREAM
 # # Input: A list of financial operations
 # # The logic needs to distinguish 'buy' vs 'sell' for net flow
-# trans_data = [
-#     {"action": "buy", "amount": 100},
-#     {"action": "sell", "amount": 150},
-#     {"action": "buy", "amount": 75},
-# ]
-# print(trans_stream.process_batch(trans_data))
+trans_data = [
+    {"action": "buy", "amount": 50},
+    {"action": "sell", "amount": 150},
+    {"action": "buy", "amount": 75},
+]
+print(trans_stream.process_batch(trans_data))
 # print(f"Stats: {trans_stream.get_stats()}\n")
 
 

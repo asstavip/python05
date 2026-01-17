@@ -8,9 +8,12 @@
 #         break
 
 
-i = "hello"
-b = "hello"
+i = "hello, world, welcome"
 
+print(i.count(","))
+b = "this is hello world "
+
+print(i in b)
 print(hex(id(i)))
 print(hex(id(b)))
 # s = 5

@@ -72,7 +72,6 @@ class LogProcessor(DataProcessor):
         print("Initializing Log Processor...")
 
     def process(self, data: Any) -> str:
-        print("Processing data:", data)
         if self.validate(data):
             string = str(data).split(":")
             message = "ERROR"
@@ -94,7 +93,9 @@ class LogProcessor(DataProcessor):
 print("=== CODE NEXUS - DATA PROCESSOR FOUNDATION ===")
 processor_numeric = NumericProcessor()
 data = [1, 2, 3, 4, 5]
-print(processor_numeric.format_output(processor_numeric.process(data)), "\n")
+print("Processing data:", data)
+pr = processor_numeric.process(data)
+print(processor_numeric.format_output(pr), "\n")
 
 processor_text = TextProcessor()
 data = "Hello Nexus World"

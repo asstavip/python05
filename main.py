@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+return data#!/usr/bin/env python3
 """
 Code Nexus - Polymorphism Testing Suite with Type Checking
 

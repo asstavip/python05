@@ -1,27 +1,10 @@
-# for i in range(1,10):
-#     print(i)
-# t = list(range(1, 10))
-# while True:
-#     try:
-#         print(next(t))
-#     except StopIteration:
-#         break
+
+class B:
+    pass
+
+print(B.__mro__)
+print(type.__mro__)
 
 
-i = "hello, world, welcome"
 
-print(i.count(","))
-b = "this is hello world "
 
-print(i in b)
-print(hex(id(i)))
-print(hex(id(b)))
-# s = 5
-
-# i = 2**4000
-
-# print(type(i))
-# print(i)
-
-# print(sys.getsizeof(i))
-# print(sys.getsizeof(s))

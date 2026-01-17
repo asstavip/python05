@@ -3,6 +3,7 @@ from typing import Any, List, Dict, Union, Optional
 
 
 class DataStream(ABC):
+
     @abstractmethod
     def process_batch(self, data_batch: List[Any]) -> str:
         pass
@@ -39,7 +40,7 @@ class SensorStream(DataStream):
             else:
                 string += f"{ele}"
         string += "]"
-        print(string)
+        
         self.__total_obj += len(data_batch)
 
         temps = [e["value"] for e in data_batch if e.get("type") == "temp"]
@@ -133,12 +134,17 @@ class EventStream(DataStream):
     def filter_data(
         self, data_batch: List[Any], criteria: Optional[str] = None
     ) -> List[Any]:
+
         filtered_data = []
         for element in data_batch:
             if isinstance(element,str) and criteria.lower() in element.lower():
                 filtered_data.append(element)
         return filtered_data
             
+    def test () -> int | str | dict:
+        pass
+        
+
 
     def get_stats(self) -> Dict[str, Union[str, int, float]]:
         return {
@@ -149,7 +155,7 @@ class EventStream(DataStream):
 class StreamProcessor:
     def __init__(self):
         super().__init__()
-        print("Processing mixed stream types through unified interface...")        
+        print("Processing mixed stream types through unified interface...\n")        
 
     def process_all(self, data_batches: List[List[Any]]) -> List[str]:
         results = []
@@ -161,7 +167,7 @@ class StreamProcessor:
     def print_summary(self, results: List[str]) -> None:
         print(f"Batch 1 Results:")
         for i, result in enumerate(results, 1):
-            print(result)
+            print(result.split(",")[0])
 
 
 
@@ -176,9 +182,9 @@ sensor_data = [
     {"type": "humidity", "value": 65},
     {"type": "pressure", "value": 1013},
 ]
-print(sensor_stream.process_batch(sensor_data))
+print(sensor_stream.process_batch(sensor_data), "\n")
 # # # Stats might return the internal counter tracked by the object
-print(f"Stats: {sensor_stream.get_stats()}\n")
+# print(f"Stats: {sensor_stream.get_stats()}\n")
 
 trans_stream = TransactionStream("TRANS_001")
 
@@ -190,18 +196,19 @@ trans_data = [
     {"action": "sell", "amount": 150},
     {"action": "buy", "amount": 75},
 ]
-print(trans_stream.process_batch(trans_data))
-print(f"Stats: {trans_stream.get_stats()}\n")
+print(trans_stream.process_batch(trans_data), "\n")
+# print(f"Stats: {trans_stream.get_stats()}\n")
+
 
 event_stream = EventStream("EVENT_001")
 # --- Sample Data Batches and Processing ---
 # Input: A list of log event strings
 # The logic needs to count error occurrences
-event_data = ["user_login", "connection_error", "user_logout"]
+event_data = ["user_login", "connection_error", "user_logout","log_error"]
 print(event_stream.process_batch(event_data))
-print(f"Stats: {event_stream.get_stats()}\n")
+# print(f"Stats: {event_stream.get_stats()}\n")
 
-
+print()
 # --- Polymorphic Processing Demo ---
 print("=== Polymorphic Stream Processing ===")
 
@@ -215,7 +222,7 @@ tasks = [
 stream_processor = StreamProcessor()
 results = stream_processor.process_all(tasks)
 stream_processor.print_summary(results)
-
+print()
 
 print("Stream filtering active: High-priority data only")
 filtered_events = event_stream.filter_data(event_data, criteria="error")

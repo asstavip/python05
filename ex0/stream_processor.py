@@ -12,7 +12,7 @@ class DataProcessor(ABC):
         pass
 
     def format_output(self, result: str) -> str:
-        return f"Output: {result}"
+        return result
 
 
 class NumericProcessor(DataProcessor):
@@ -21,7 +21,7 @@ class NumericProcessor(DataProcessor):
         print("Initializing Numeric Processor...")
 
     def process(self, data: Any) -> str:
-        print("Processing data:", data)
+        
         if self.validate(data) == False:
             return "Cannot Proccessing Data"
         return (
@@ -33,13 +33,10 @@ class NumericProcessor(DataProcessor):
         try:
             for elem in data:
                 if not isinstance(elem, int):
-                    print("Validation: Numeric data not verified")
                     return False
         except TypeError:
-            print("Validation: Numeric data not verified")
             return False
         else:
-            print("Validation: Numeric data verified")
             return True
 
 
@@ -49,7 +46,6 @@ class TextProcessor(DataProcessor):
         print("Initializing Text Processor...")
 
     def process(self, data: Any) -> str:
-        print("Processing data:", data)
         if self.validate(data):
             string = str(data)
             words = string.split(" ")
@@ -59,10 +55,8 @@ class TextProcessor(DataProcessor):
 
     def validate(self, data: Any) -> bool:
         if isinstance(data, str):
-            print("Validation: Text data verified")
             return True
         else:
-            print("Validation: Text data not verified")
             return False
 
 
@@ -82,11 +76,9 @@ class LogProcessor(DataProcessor):
             return "Cannot Proccessing Data"
 
     def validate(self, data: Any) -> bool:
-        if isinstance(data, str):
-            print("Validation: Log entry verified")
+        if isinstance(data, str):  
             return True
         else:
-            print("Validation: Log entry not verified")
             return False
 
 
@@ -95,15 +87,30 @@ processor_numeric = NumericProcessor()
 data = [1, 2, 3, 4, 5]
 print("Processing data:", data)
 pr = processor_numeric.process(data)
-print(processor_numeric.format_output(pr), "\n")
+if processor_numeric.validate(data):
+    print("Validation: Numeric data verified")
+    print("Output:", processor_numeric.format_output(pr), "\n")
+else:
+    print("Validation: Numeric data not verified")
 
 processor_text = TextProcessor()
 data = "Hello Nexus World"
-print(processor_text.format_output(processor_text.process(data)), "\n")
+print("Processing data:", data)
+if processor_text.validate(data):
+    print("Validation: Text data verified")
+    print("Output:", processor_text.format_output(processor_text.process(data)), "\n")
+else:
+    print("Validation: Text data not verified")
 
 processor_log = LogProcessor()
-data = "Hello Nexus World"
-print(processor_log.format_output(processor_log.process(data)), "\n")
+data = "ERROR: Connection timeout"
+print("Processing data:", data)
+if processor_log.validate(data):
+    print("Validation: Log entry verified")
+    print("Output:", processor_log.format_output(processor_log.process(data)), "\n")
+else:
+    print("Validation: Log entry not verified")
+
 
 print("=== Polymorphic Processing Demo ===")
 print("Processing multiple data types through same interface...")
@@ -116,7 +123,7 @@ tasks = [
 print()
 for i, (pr, data) in enumerate(tasks, 1):
     result = pr.format_output(pr.process(data))
-    print(f"Result {i}: {result}\n")
+    print(f"Result {i}: {result}")
 
 
-print("Foundation systems online. Nexus ready for advanced streams.")
+print("\nFoundation systems online. Nexus ready for advanced streams.")
